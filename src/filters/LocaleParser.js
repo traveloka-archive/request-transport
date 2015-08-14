@@ -1,18 +1,15 @@
 import Immutable from 'immutable';
+import Filter from './Filter';
 
-class LocaleParser {
-  constructor() {
-    this.countries = this.loadCountries();
-    this.locales = this.generateLocales();
-    this.pages = Immutable.OrderedMap();
-    this.router = {
-      url: function(routeId, locale) {
-        return locale.routePrefix + this.pages.get(routeId).route;
-      }.bind(this)
-    };
+class LocaleParser extends Filter {
+  constructor(reverseRouter) {
+    super();
+    this._reverseRouter = reverseRouter;
+    this._countries = this._loadCountries();
+    this._locales = this._generateLocales();
   } 
   
-  loadCountries() {
+  _loadCountries() {
     let countries = Immutable.OrderedMap();
     countries = countries.set('id', { languages: ['id', 'en'] });
     countries = countries.set('sg', { languages: ['en'] });
@@ -20,9 +17,9 @@ class LocaleParser {
     return countries;
   }
   
-  generateLocales() {
+  _generateLocales() {
     let locales = Immutable.OrderedMap();
-    this.countries.forEach((country, countryId) => {
+    this._countries.forEach((country, countryId) => {
       country.languages.forEach(languageId => {
         let locale = {
           language: languageId,
@@ -53,10 +50,10 @@ class LocaleParser {
     return locales;
   }
   
-  parseLocale(req, res, next) {
+  onFilter(req, res, next) {
     let urlParts = req.url.split('/');
     if(urlParts.length > 0) {
-      let locale = this.locales.get(urlParts[1]);
+      let locale = this._locales.get(urlParts[1]);
       if(locale !== undefined) {
         req.locale = locale;
         req.url = req.url.substr(urlParts[1].length + 1);
@@ -66,16 +63,10 @@ class LocaleParser {
       }
     }
     if(req.locale === undefined) {
-      req.locale = this.locales.first();
+      req.locale = this._locales.first();
     }
-    req.router = this.router;
+    req.router = this._reverseRouter;
     next();
-  }
-  
-  register(routeId, page) {
-    if(this.pages.get(routeId) === undefined) {
-      this.pages = this.pages.set(routeId, page);
-    }
   }
 }
 
