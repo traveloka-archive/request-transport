@@ -1,4 +1,4 @@
-import Page from './Page';
+import Page from '../core/Page';
 
 class FlightHome extends Page {
   render(req, res, next) {

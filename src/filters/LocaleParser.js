@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import Filter from './Filter';
+import Filter from '../core/Filter';
 
 class LocaleParser extends Filter {
   constructor(reverseRouter) {

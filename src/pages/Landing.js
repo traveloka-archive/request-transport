@@ -1,5 +1,5 @@
-import Page from './Page';
-import PageName from './PageName';
+import Page from '../core/Page';
+import PageName from '../const/PageName';
 
 class Landing extends Page {
   render(req, res, next) {

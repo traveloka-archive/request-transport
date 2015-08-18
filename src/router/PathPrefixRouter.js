@@ -1,11 +1,11 @@
 import express from 'express';
 import Immutable from 'immutable';
 import BabelPolyfil from 'babel/polyfill'
-import FilterFactory from '../filters/FilterFactory';
+import FilterFactory from '../core/FilterFactory';
 import ReverseRouter from './ReverseRouter';
 import LocaleParser from '../filters/LocaleParser';
 
-class TvRouter {
+class PathPrefixRouter {
   constructor() {
     this._app = express();
     
@@ -42,4 +42,4 @@ class TvRouter {
   }
 }
 
-export default TvRouter;
+export default PathPrefixRouter;

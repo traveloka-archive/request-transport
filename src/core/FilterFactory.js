@@ -1,5 +1,5 @@
-import LocaleParser from './LocaleParser';
-import Sender from './Sender';
+import LocaleParser from '../filters/LocaleParser';
+import Sender from '../filters/Sender';
 
 class FilterFactory {
   constructor(reverseRouter) {
