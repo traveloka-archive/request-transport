@@ -2,7 +2,7 @@
 Locale Aware Nodejs Router
 
 ##Examples
-```
+```JavaScript
 import { PathPrefixRouter as Router } from 'request-transport';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
