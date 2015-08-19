@@ -1,44 +1,38 @@
-import express from 'express';
-import Immutable from 'immutable';
-import BabelPolyfil from 'babel/polyfill'
 import FilterFactory from '../core/FilterFactory';
-import ReverseRouter from './ReverseRouter';
-import LocaleParser from '../filters/LocaleParser';
+import Router from '../core/Router';
+import Immutable from 'immutable';
 
-class PathPrefixRouter {
+class PathPrefixRouter extends Router {
   constructor() {
-    this._app = express();
-    
-    /* Common Components */
-    this._reverseRouter = new ReverseRouter();
-    this._filterFactory = new FilterFactory(this._reverseRouter);
-    this._router = express.Router();
-    
-    let localeParser = this._filterFactory.getFilter(LocaleParser.name);
-    this._router.use(localeParser.onFilter.bind(localeParser));
+    super();
+    this._router.use(this.parseLocale.bind(this));
+    this._locales = Immutable.OrderedSet();
   }
   
-  register(requestType, protocols, domain, routeId, route, Page) {
-    let page = new Page(requestType, protocols, domain, routeId, route);
-    let routerArguments = [];
-    routerArguments.push(route);
-    page.getRequestFilters().forEach(b => {
-      let filter = this._filterFactory.getFilter(b.name);
-      routerArguments.push(filter.onFilter.bind(filter));
+  register(requestType, protocols, domains, routeId, route, Page) {
+    super.register(requestType, protocols, domains, routeId, route, Page);
+    domains.forEach(domain => {
+      this._locales = this._locales.add(domain.locale);
     });
-    routerArguments.push(page.render.bind(page));
-    page.getResponseFilters().forEach(a => {
-      let filter = this._filterFactory.getFilter(a.name);
-      routerArguments.push(filter.onFilter.bind(filter));
-    });
-    Reflect.apply(this._router[requestType], this._router, routerArguments);
-    
-    this._reverseRouter.register(routeId, page);
   }
   
-  start(port) {
-    this._app.use(this._router);
-    this._app.listen(port);
+  parseLocale(req, res, next) {
+    let urlParts = req.url.split('/');
+    if(urlParts.length > 0) {
+      let localeCandidate = urlParts[1];
+      if(this._locales.contains(localeCandidate)) {
+        req.locale = localeCandidate;
+        req.url = req.url.substr(localeCandidate.length + 1);
+        if(req.url.length === 0) {
+          req.url = '/';
+        }
+      }
+    }
+    if(req.locale === undefined) {
+      req.locale = this._locales.first();
+    }
+    req.router = this._reverseRouter;
+    next();
   }
 }
 

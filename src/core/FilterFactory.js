@@ -1,14 +1,13 @@
-import LocaleParser from '../filters/LocaleParser';
 import Sender from '../filters/Sender';
 
 class FilterFactory {
   constructor(reverseRouter) {
     this._filters = {};
-    this._filters[LocaleParser.name] = new LocaleParser(reverseRouter);
     this._filters[Sender.name] = new Sender();
   }
   
-  getFilter(filterName) {
+  getFilter(filterClass) {
+    let filterName = filterClass.name;
     if(this._filters.hasOwnProperty(filterName)) {
       return this._filters[filterName];
     }

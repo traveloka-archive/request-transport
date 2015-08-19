@@ -1,18 +1,30 @@
-import LocaleParser from '../filters/LocaleParser';
 import Sender from '../filters/Sender';
+import Immutable from 'immutable';
 
 class Page {
-  constructor(requestType, protocols, domain, routeId, route) {
+  constructor(requestType, protocols, domains, routeId, route) {
     this._requestType = requestType;
     this._protocols = protocols;
-    this._domain = domain;
+    this._domains = this._parseDomains(domains);
     this._routeId = routeId;
     this._route = route;
     this._initDefaultFilters();
   }
   
+  _parseDomains(domains) {
+    let parsedDomain = {
+      domains: Immutable.OrderedMap(),
+      locales: Immutable.OrderedMap()
+    };
+    domains.forEach(domain => {
+      parsedDomain.domains = parsedDomain.domains.set(domain.locale, domain.domain);
+      parsedDomain.locales = parsedDomain.locales.set(domain.domain, domain.locale);
+    });
+    return parsedDomain;
+  }
+  
   _initDefaultFilters() {
-    this._requestFilters = [LocaleParser];
+    this._requestFilters = [];
     this._responseFilters = [Sender];
   }
   
@@ -20,8 +32,23 @@ class Page {
     return this._routeId;
   }
   
-  getHost() {
-    return this._protocols[0] + '://' + this._domain;
+  getDomain(locale) {
+    let domain = this._domains.domains.get(locale);
+    if(domain === undefined) {
+      throw 'Page: ' + this.name + ' does not have locale: ' + locale;
+    }
+    return this._protocols[0] + '://' + domain;
+  }
+  
+  getLocale(domain) {
+    let locale = this._domains.locales.get(domain);
+    if(locale === undefined) {
+      throw 'Page: ' + this.name + ' does not have domain: ' + domain;
+    }
+  }
+  
+  getLocales() {
+    return this._domains.domains.keySeq();
   }
   
   getRoute() {

@@ -1,4 +1,4 @@
-const RequestType = {
+const Request = {
   GET: 'get',
   POST: 'post',
   ALL: 'all',
@@ -6,4 +6,4 @@ const RequestType = {
   PUT: 'put'
 };
 
-export default RequestType;
+export default Request;
