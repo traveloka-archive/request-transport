@@ -35,7 +35,7 @@ class ReverseRouter {
       }
       return value ? '/' + value : '';
     });;
-    return host + route;
+    return host.domain + route;
   }
 }
 

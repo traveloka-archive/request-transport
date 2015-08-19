@@ -14,8 +14,12 @@ class Router {
     this._router = express.Router();
   }
   
-  register(requestType, protocols, domains, routeId, route, Page) {
-    let page = new Page(requestType, protocols, domains, routeId, route);
+  register(requestTypes, protocols, domains, routeId, route, Page) {
+    // Make sure they are array
+    requestTypes = requestTypes.constructor !== Array ? [requestTypes] : requestTypes;
+    protocols = protocols.constructor !== Array ? [protocols] : protocols;
+    
+    let page = new Page(requestTypes, protocols, domains, routeId, route);
     let routerArguments = [];
     routerArguments.push(route);
     page.getRequestFilters().forEach(b => {
@@ -27,7 +31,15 @@ class Router {
       let filter = this._filterFactory.getFilter(a);
       routerArguments.push(filter.onFilter.bind(filter));
     });
-    Reflect.apply(this._router[requestType], this._router, routerArguments);
+    
+    if(requestTypes.length > 1 && requestTypes.indexOf('all') !== -1) {
+      throw 'requestType: "all" should stand alone';
+    }
+    else {
+      requestTypes.forEach(requestType => {
+        Reflect.apply(this._router[requestType], this._router, routerArguments);
+      });
+    }
     
     this._reverseRouter.register(routeId, page);
   }
