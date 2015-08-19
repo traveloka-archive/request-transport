@@ -1,19 +1,17 @@
-import Sender from '../filters/Sender';
+import Immutable from 'immutable';
 
 class FilterFactory {
-  constructor(reverseRouter) {
-    this._filters = {};
-    this._filters[Sender.name] = new Sender();
+  constructor() {
+    this._filters = Immutable.Map();
   }
   
-  getFilter(filterClass) {
-    let filterName = filterClass.name;
-    if(this._filters.hasOwnProperty(filterName)) {
-      return this._filters[filterName];
+  getFilter(FilterClass) {
+    let filter = this._filters.get(FilterClass);
+    if(filter === undefined) {
+      filter = new FilterClass();
+      this._filters = this._filters.set(FilterClass, filter);
     }
-    else {
-      throw 'Filter ' + filterName + ' not found';
-    }
+    return filter;
   }
 }
 

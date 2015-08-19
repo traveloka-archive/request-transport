@@ -1,4 +1,3 @@
-import FilterFactory from '../core/FilterFactory';
 import Router from '../core/Router';
 import Immutable from 'immutable';
 
