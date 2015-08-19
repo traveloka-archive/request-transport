@@ -3,8 +3,9 @@ import { Page } from 'request-transport';
 class Signup extends Page {
   render(req, res, next) {
     switch(req.method) {
-      case 'post': this.onPost(req, res, next); break;
-      case 'get': this.onGet(req, res, next); break;
+      case 'POST': this.onPost(req, res, next); break;
+      case 'GET': this.onGet(req, res, next); break;
+      default: res.sendStatus(404); break;
     }
   }
   

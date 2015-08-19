@@ -36,7 +36,7 @@ class Router {
     }
     else {
       requestTypes.forEach(requestType => {
-        Function.apply(this._router[requestType], this._router, routerArguments);
+        Function.prototype.apply.call(this._router[requestType], this._router, routerArguments);
       });
     }
     
