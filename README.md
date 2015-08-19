@@ -15,7 +15,7 @@ router.start(29099);
 ```
 
 ##Try The Framework
-```
+```Shell
 git clone git@github.com:traveloka/request-transport.git
 cd request-transport/examples/locale-by-path-prefix
 npm install
