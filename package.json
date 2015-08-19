@@ -1,14 +1,33 @@
 {
   "name": "request-transport",
-  "version": "0.1.15",
-  "description": "Locale aware nodejs router",
+  "version": "0.1.16",
+  "description": "Locale Aware Nodejs Router",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/babel src --out-dir lib -w --source-maps"
   },
-  "author": "Traveloka Engineering",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/traveloka/request-transport.git"
+  },
+  "author": {
+    "name": "Asendia Mayco",
+    "email": "asendia@traveloka.com"
+  },
+  "keywords": [
+    "express",
+    "framework",
+    "router",
+    "reverse",
+    "locale",
+    "i18n"
+  ],
+  "files": [
+    "README.md",
+    "lib/"
+  ],
+  "license": "MIT",
   "dependencies": {
     "babel": "^5.8.21",
     "body-parser": "^1.13.3",
