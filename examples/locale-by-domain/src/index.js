@@ -1,4 +1,4 @@
-import { PathPrefixRouter as Router } from 'request-transport';
+import { DomainRouter as Router } from 'request-transport';
 import Home from './pages/Home';
 
 let router = new Router([

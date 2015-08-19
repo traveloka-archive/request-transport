@@ -7,7 +7,7 @@ class DomainRouter extends Router {
     this._router.use(this.parseLocale.bind(this));
     this._domains = Immutable.OrderedMap();
     domains.forEach(domain => {
-      this._domains.set(domain.domain, {
+      this._domains = this._domains.set(domain.domain, {
         locale: domain.locale,
         domain: domain.domain
       })
