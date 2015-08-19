@@ -24,7 +24,7 @@ class PathPrefixRouter extends Router {
       let localeCandidate = this._domains.get(urlParts[1]);
       if(localeCandidate !== undefined) {
         req.locale = localeCandidate.locale;
-        req.url = req.url.substr(req.locale + 1);
+        req.url = req.url.substr(req.locale.length + 1);
         if(req.url.length === 0) {
           req.url = '/';
         }
