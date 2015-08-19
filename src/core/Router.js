@@ -2,6 +2,7 @@ import express from 'express';
 import Immutable from 'immutable';
 import FilterFactory from '../core/FilterFactory';
 import ReverseRouter from './ReverseRouter';
+import bodyParser from 'body-parser';
 
 class Router {
   constructor() {
@@ -11,6 +12,10 @@ class Router {
     this._reverseRouter = new ReverseRouter();
     this._filterFactory = new FilterFactory(this._reverseRouter);
     this._router = express.Router();
+    
+    // Default parser
+    this._router.use(bodyParser.urlencoded({ extended: false }));
+    this._router.use(bodyParser.json());
   }
   
   register(routeId, requestTypes, protocols, route, Page, domains) {
