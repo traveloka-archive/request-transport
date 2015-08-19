@@ -19,7 +19,8 @@ router.start(29099);
 git clone git@github.com:traveloka/request-transport.git
 cd request-transport/examples/locale-by-path-prefix
 npm install
-npm build
+npm run build
 node lib/index.js
 ```
+*use sudo if setup failed
 <a href="http://localhost:29099/en-id" target="_blank">Then open localhost:29099/en-id</a>
