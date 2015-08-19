@@ -14,8 +14,8 @@ class DomainRouter extends Router {
     });
   }
   
-  register(requestTypes, protocols, routeId, route, Page) {
-    super.register(requestTypes, protocols, this._domains, routeId, route, Page);
+  register(routeId, requestTypes, protocols, route, Page) {
+    super.register(routeId, requestTypes, protocols, route, Page, this._domains);
   }
   
   parseLocale(req, res, next) {

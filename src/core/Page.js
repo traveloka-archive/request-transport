@@ -2,12 +2,12 @@ import Sender from '../filters/Sender';
 import Immutable from 'immutable';
 
 class Page {
-  constructor(requestType, protocols, domains, routeId, route) {
+  constructor(routeId, requestType, protocols, route, domains) {
+    this._routeId = routeId;
     this._requestType = requestType;
     this._protocols = protocols;
-    this._domains = domains
-    this._routeId = routeId;
     this._route = route;
+    this._domains = domains;
     this._initDefaultFilters();
   }
   

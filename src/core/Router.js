@@ -1,6 +1,5 @@
 import express from 'express';
 import Immutable from 'immutable';
-import BabelPolyfil from 'babel/polyfill'
 import FilterFactory from '../core/FilterFactory';
 import ReverseRouter from './ReverseRouter';
 
@@ -14,12 +13,12 @@ class Router {
     this._router = express.Router();
   }
   
-  register(requestTypes, protocols, domains, routeId, route, Page) {
+  register(routeId, requestTypes, protocols, route, Page, domains) {
     // Make sure they are array
     requestTypes = requestTypes.constructor !== Array ? [requestTypes] : requestTypes;
     protocols = protocols.constructor !== Array ? [protocols] : protocols;
     
-    let page = new Page(requestTypes, protocols, domains, routeId, route);
+    let page = new Page(routeId, requestTypes, protocols, route, domains);
     let routerArguments = [];
     routerArguments.push(route);
     page.getRequestFilters().forEach(b => {
@@ -37,7 +36,7 @@ class Router {
     }
     else {
       requestTypes.forEach(requestType => {
-        Reflect.apply(this._router[requestType], this._router, routerArguments);
+        Function.apply(this._router[requestType], this._router, routerArguments);
       });
     }
     
