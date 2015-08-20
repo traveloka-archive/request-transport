@@ -1,11 +1,11 @@
 {
   "name": "request-transport",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Locale Aware Nodejs Router",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/babel src --out-dir lib -w --source-maps"
+    "build": "./node_modules/.bin/babel src --out-dir lib --source-maps"
   },
   "repository": {
     "type": "git",
