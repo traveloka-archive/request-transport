@@ -5,8 +5,9 @@ import ReverseRouter from './ReverseRouter';
 import bodyParser from 'body-parser';
 
 class Router {
-  constructor() {
+  constructor(domains) {
     this._app = express();
+    this._defaultDomains = domains;
     
     /* Common Components */
     this._reverseRouter = new ReverseRouter();
@@ -19,6 +20,8 @@ class Router {
   }
   
   register(routeId, requestTypes, protocols, route, Page, domains) {
+    domains = domains || this._defaultDomains;
+    
     // Make sure they are array
     requestTypes = requestTypes.constructor !== Array ? [requestTypes] : requestTypes;
     protocols = protocols.constructor !== Array ? [protocols] : protocols;

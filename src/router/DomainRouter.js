@@ -2,26 +2,30 @@ import Router from '../core/Router';
 import Immutable from 'immutable';
 
 class DomainRouter extends Router {
-  constructor(domains) {
-    super();
-    this._router.use(this.parseLocale.bind(this));
-    this._domains = Immutable.OrderedMap();
-    domains.forEach(domain => {
-      this._domains = this._domains.set(domain.locale, {
-        locale: domain.locale,
-        domain: domain.domain
-      })
+  constructor(domainList) {
+    let domains = Immutable.OrderedMap();
+    let domainsByHostname = Immutable.OrderedMap();
+    domains.forEach(d => {
+      let domain = {
+        locale: d.locale,
+        domain: d.domain
+      };
+      domains = domains.set(domain.locale, domain);
+      domainsByHostname = domainsByHostname.set(domain.domain, domain);
     });
+    super(domains);
+    this._router.use(this.parseLocale.bind(this));
+    this._domainsByHostname = domainsByHostname;
   }
   
-  register(routeId, requestTypes, protocols, route, Page) {
-    super.register(routeId, requestTypes, protocols, route, Page, this._domains);
+  register(routeId, requestTypes, protocols, route, Page, domains) {
+    super.register(routeId, requestTypes, protocols, route, Page, domains);
   }
   
   parseLocale(req, res, next) {
-    let domain = this._domains.get(req.hostname);
+    let domain = this._domainsByHostname.get(req.hostname);
     if(domain === undefined) {
-      domain = this._domains.first();
+      domain = this._domainsByHostname.first();
     }
     req.locale = domain.locale;
     req.router = this._reverseRouter;

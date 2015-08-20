@@ -3,19 +3,19 @@ import Immutable from 'immutable';
 
 class PathPrefixRouter extends Router {
   constructor(host, locales) {
-    super();
-    this._router.use(this.parseLocale.bind(this));
-    this._domains = Immutable.OrderedMap();
+    let domains = Immutable.OrderedMap();
     locales.forEach(locale => {
-      this._domains = this._domains.set(locale, {
+      domains = domains.set(locale, {
         locale: locale,
         domain: host + '/' + locale
       });
     });
+    super(domains);
+    this._router.use(this.parseLocale.bind(this));
   }
   
-  register(routeId, requestTypes, protocols, route, Page) {
-    super.register(routeId, requestTypes, protocols, route, Page, this._domains);
+  register(routeId, requestTypes, protocols, route, Page, domains) {
+    super.register(routeId, requestTypes, protocols, route, Page, domains);
   }
   
   parseLocale(req, res, next) {
