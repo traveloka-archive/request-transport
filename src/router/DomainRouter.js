@@ -5,7 +5,7 @@ class DomainRouter extends Router {
   constructor(domainList) {
     let domains = Immutable.OrderedMap();
     let domainsByHostname = Immutable.OrderedMap();
-    domains.forEach(d => {
+    domainList.forEach(d => {
       let domain = {
         locale: d.locale,
         domain: d.domain
