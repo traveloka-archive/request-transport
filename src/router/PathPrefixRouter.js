@@ -2,12 +2,13 @@ import Router from '../core/Router';
 import Immutable from 'immutable';
 
 class PathPrefixRouter extends Router {
-  constructor(host, locales) {
+  constructor(host, locales, defaultLocale) {
     let domains = Immutable.OrderedMap();
-    locales.forEach(locale => {
+    locales.forEach(locale=> {
+      let domain = locale === defaultLocale ? host : host + '/' + locale;
       domains = domains.set(locale, {
         locale: locale,
-        domain: host + '/' + locale
+        domain: domain
       });
     });
     super(domains);
