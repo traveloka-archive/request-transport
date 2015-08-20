@@ -10,14 +10,14 @@ class ReverseRouter {
       this._pages = this._pages.set(pageId, page);
     }
     else {
-      throw 'Duplicate pageId ' + pageId;
+      throw new Error('Duplicate pageId ' + pageId);
     }
   }
   
   url(pageId, locale, params) {
     let page = this._pages.get(pageId);
     if(page === undefined) {
-      throw 'pageId: ' + pageId + ' not found';
+      throw new Error('pageId: ' + pageId + ' not found.');
     }
     let host = page.getDomain(locale);
     let route = page.getRoute().replace(/(\/:(\w+)?(\(.+?\))?(\?)?)/g, (m, pFull, pName, pRegex, pOptional) => {

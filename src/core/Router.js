@@ -40,7 +40,7 @@ class Router {
     });
     
     if(requestTypes.length > 1 && requestTypes.indexOf('all') !== -1) {
-      throw 'requestType: "all" should stand alone';
+      throw new Error('requestType: "all" cannot be combined with other requests');
     }
     else {
       requestTypes.forEach(requestType => {

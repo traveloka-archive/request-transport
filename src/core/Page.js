@@ -19,7 +19,7 @@ class Page {
   getDomain(locale) {
     let domain = this._domains.get(locale);
     if(domain === undefined) {
-      throw 'Page: ' + this.name + ' does not have locale: ' + locale;
+      throw new Error('Page: ' + this.name + ' does not have locale: ' + locale);
     }
     return this._protocols[0] + '://' + domain.domain;
   }
