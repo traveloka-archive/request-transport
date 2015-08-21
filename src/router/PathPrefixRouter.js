@@ -22,7 +22,7 @@ class PathPrefixRouter extends Router {
   parseLocale(req, res, next) {
     let urlParts = req.url.split('/');
     if(urlParts.length > 0) {
-      let localeCandidate = this._domains.get(urlParts[1]);
+      let localeCandidate = this._defaultDomains.get(urlParts[1]);
       if(localeCandidate !== undefined) {
         req.locale = localeCandidate.locale;
         req.url = req.url.substr(req.locale.length + 1);
@@ -32,7 +32,7 @@ class PathPrefixRouter extends Router {
       }
     }
     if(req.locale === undefined) {
-      req.locale = this._domains.first().locale;
+      req.locale = this._defaultDomains.first().locale;
     }
     req.router = this._reverseRouter;
     next();
