@@ -1,5 +1,6 @@
 import Router from '../core/Router';
 import Immutable from 'immutable';
+import ReverseRouterFacade from '../core/ReverseRouterFacade';
 
 class PathPrefixRouter extends Router {
   constructor(host, locales, defaultLocale) {
@@ -34,7 +35,8 @@ class PathPrefixRouter extends Router {
     if(req.locale === undefined) {
       req.locale = this._defaultDomains.first().locale;
     }
-    req.router = this._reverseRouter;
+    let reverseRouter = new ReverseRouterFacade(this._reverseRouter, req.locale);
+    req.router = reverseRouter;
     next();
   }
 }

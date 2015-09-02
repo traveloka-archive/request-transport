@@ -15,7 +15,7 @@ class Signup extends Page {
   
   onGet(req, res, next) {
     let body = 'this is : ' + this.getRouteId() + ' , locale: ' + JSON.stringify(req.locale);
-    body += '<form action="' + req.router.url('SIGNUP', req.locale) + '" method="post">';
+    body += '<form action="' + req.router.url('SIGNUP') + '" method="post">';
     body += '<input type="text" name="username" /><input type="submit" value="register">';
     this.send(req, next, body);
   }
