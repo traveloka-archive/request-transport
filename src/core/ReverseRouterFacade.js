@@ -15,4 +15,4 @@ class ReverseRouterFacade {
 
 }
 
-extends ReverseRouterFacade;
+export default ReverseRouterFacade;
