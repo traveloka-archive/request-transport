@@ -5,14 +5,35 @@ import ReverseRouterFacade from '../core/ReverseRouterFacade';
 class PathPrefixRouter extends Router {
   constructor(host, locales, defaultLocale) {
     let domains = Immutable.OrderedMap();
+    let isDefaultLocaleFound = false;
+
+    if(locales == null || locales.length === 0) {
+      throw new Error('locales cannot be null nor empty array');
+    }
+    if(defaultLocale != null && locales.indexOf(defaultLocale) === -1) {
+      throw new Error('Locale ' + defaultLocale + ' is not defined in locales');
+    }
+
     locales.forEach(locale=> {
-      let domain = locale === defaultLocale ? host : host + '/' + locale;
+      let domain;
+
+      if(locale === defaultLocale) {
+        domain = host;
+      }
+      else {
+        domain = host + '/' + locale;
+      }
       domains = domains.set(locale, {
         locale: locale,
         domain: domain
       });
     });
+
     super(domains);
+
+    if(defaultLocale != null) {
+      this._defaultDomain = this._defaultLocales.get(defaultLocale);
+    }
     this._router.use(this.parseLocale.bind(this));
   }
   
@@ -33,7 +54,7 @@ class PathPrefixRouter extends Router {
       }
     }
     if(req.locale === undefined) {
-      req.locale = this._defaultDomains.first().locale;
+      req.locale = this._defaultDomain.locale;
     }
     let reverseRouter = new ReverseRouterFacade(this._reverseRouter, req.locale);
     req.router = reverseRouter;

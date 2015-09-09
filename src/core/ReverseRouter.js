@@ -24,13 +24,13 @@ class ReverseRouter {
       let required = !pOptional;
       let param = pName;
       if (required && !params.hasOwnProperty(param)) {
-        throw new Error('Missing value for "' + param + '".');
+        throw new Error('Missing value for "' + param + '"');
       }
   
       let value = params[param];
       if (pRegex && value) {
         if (!new RegExp('^' + pRegex + '$').test(value)) {
-          throw new Error('Invalid value for "' + param + '", should match "' + pRegex + '".');
+          throw new Error('Invalid value for "' + param + '", should match "' + pRegex + '"');
         }
       }
       return value ? '/' + value : '';

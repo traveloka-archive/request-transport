@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "babel": "^5.8.21",
-    "request-transport": "^0.3.3"
+    "request-transport": "^0.3.4"
   }
 }
