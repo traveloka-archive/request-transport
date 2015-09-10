@@ -32,7 +32,7 @@ class PathPrefixRouter extends Router {
     super(domains);
 
     if(defaultLocale != null) {
-      this._defaultDomain = this._defaultLocales.get(defaultLocale);
+      this._defaultDomain = this._defaultDomains.get(defaultLocale);
     }
     this._router.use(this.parseLocale.bind(this));
   }
