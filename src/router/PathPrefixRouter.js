@@ -4,8 +4,18 @@ import ReverseRouterFacade from '../core/ReverseRouterFacade';
 
 class PathPrefixRouter extends Router {
   constructor(host, locales, defaultLocale) {
+    let domains = PathPrefixRouter.createDomainMap(host, locales, defaultLocale);
+
+    super(domains);
+
+    if(defaultLocale != null) {
+      this._defaultDomain = this._defaultDomains.get(defaultLocale);
+    }
+    this._router.use(this.parseLocale.bind(this));
+  }
+
+  static createDomainMap(host, locales, defaultLocale) {
     let domains = Immutable.OrderedMap();
-    let isDefaultLocaleFound = false;
 
     if(locales == null || locales.length === 0) {
       throw new Error('locales cannot be null nor empty array');
@@ -28,13 +38,7 @@ class PathPrefixRouter extends Router {
         domain: domain
       });
     });
-
-    super(domains);
-
-    if(defaultLocale != null) {
-      this._defaultDomain = this._defaultDomains.get(defaultLocale);
-    }
-    this._router.use(this.parseLocale.bind(this));
+    return domains;
   }
   
   register(routeId, requestTypes, protocols, route, Page, domains) {
@@ -59,6 +63,13 @@ class PathPrefixRouter extends Router {
     let reverseRouter = new ReverseRouterFacade(this._reverseRouter, req.locale);
     req.router = reverseRouter;
     next();
+  }
+
+  registerDomain(host, locales, defaultLocale, registerCallback) {
+    let domains = PathPrefixRouter.createDomainMap(host, locales, defaultLocale);
+    registerCallback((routeId, requestTypes, protocols, route, Page) => {
+      this.register(routeId, requestTypes, protocols, route, Page, domains);
+    });
   }
 }
 
