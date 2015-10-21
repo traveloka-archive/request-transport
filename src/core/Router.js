@@ -28,6 +28,10 @@ class Router {
     let page = new Page(routeId, requestTypes, protocols, route, domains);
     let routerArguments = [];
     routerArguments.push(route);
+    routerArguments.push((req, res, next) => {
+      req.currentPage = page;
+      next();
+    });
     page.getRequestFilters().forEach(b => {
       let filter = this._filterFactory.getFilter(b);
       routerArguments.push(filter.onFilter.bind(filter));
