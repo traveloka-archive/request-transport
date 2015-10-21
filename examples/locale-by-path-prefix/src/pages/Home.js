@@ -2,8 +2,8 @@ import { Page } from 'request-transport';
 
 class Home extends Page {
   render(req, res, next) {
-    let body = 'this is : ' + this.getRouteId() + ' , locale: ' + JSON.stringify(req.locale);
-    body += '<br><a href="' + req.router.url('SIGNUP') + '">register</a>';
+    let body = `this is : ${this.getRouteId()}, locale: ${JSON.stringify(req.locale)}`;
+    body += `<br><a href="${req.router.url('SIGNUP')}">register</a>`;
     this.send(req, next, body);
   }
 }

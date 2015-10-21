@@ -17,14 +17,14 @@ class DomainRouter extends Router {
     this._router.use(this.parseLocale.bind(this));
     this._domainsByHostname = domainsByHostname;
   }
-  
+
   register(routeId, requestTypes, protocols, route, Page, domains) {
     super.register(routeId, requestTypes, protocols, route, Page, domains);
   }
-  
+
   parseLocale(req, res, next) {
     let domain = this._domainsByHostname.get(req.hostname);
-    if(domain === undefined) {
+    if (domain === undefined) {
       domain = this._domainsByHostname.first();
     }
     req.locale = domain.locale;
