@@ -3,15 +3,12 @@ Locale Aware Nodejs Router
 
 ##Examples
 ```JavaScript
-import { PathPrefixRouter as Router } from 'request-transport';
-import Home from './pages/Home';
-import Signup from './pages/Signup';
-
-let router = new Router('localhost:29099', ['en', 'id-id', 'en-id', 'en-sg']);
-router.register('HOME', 'get', 'http', '/', Home);
-router.register('SIGNUP', ['get', 'post'], ['http', 'https'], '/signup', Signup);
-
-router.start(29099);
+let router = new Router();
+router.register('localhost:29099', ['en', 'id-id', 'en-id', 'en-sg'], 'id-id', path => {
+  path.register('HOME', 'get', 'http', '/', Home);
+  path.register('SIGNUP', ['get', 'post'], ['http', 'https'], '/signup', Signup);
+  path.register('PROFILE', 'get', 'http', '/profile/:username', Profile);
+});
 ```
 
 ##Try The Framework
