@@ -11,7 +11,7 @@ class PathPrefixRouter extends Router {
     if (defaultLocale !== null && defaultLocale !== undefined) {
       this._defaultDomain = this._defaultDomains.get(defaultLocale);
     }
-    this._router.use(this.parseLocale.bind(this));
+    this._app.use(this.parseLocale.bind(this));
   }
 
   static createDomainMap(host, locales, defaultLocale) {
@@ -34,14 +34,11 @@ class PathPrefixRouter extends Router {
       }
       domains = domains.set(locale, {
         locale,
-        domain
+        domain,
+        host
       });
     });
     return domains;
-  }
-
-  register(routeId, requestTypes, protocols, route, Page, domains) {
-    super.register(routeId, requestTypes, protocols, route, Page, domains);
   }
 
   parseLocale(req, res, next) {
@@ -65,10 +62,10 @@ class PathPrefixRouter extends Router {
     next();
   }
 
-  registerDomain(host, locales, defaultLocale, registerCallback) {
+  register(host, locales, defaultLocale, registerCallback) {
     let domains = PathPrefixRouter.createDomainMap(host, locales, defaultLocale);
     registerCallback((routeId, requestTypes, protocols, route, Page) => {
-      this.register(routeId, requestTypes, protocols, route, Page, domains);
+      super.register(routeId, requestTypes, protocols, route, Page, domains);
     });
   }
 }

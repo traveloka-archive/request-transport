@@ -11,11 +11,12 @@ class Router {
     /* Common Components */
     this._reverseRouter = new ReverseRouter();
     this._filterFactory = new FilterFactory(this._reverseRouter);
-    this._router = express.Router();
 
     // Default parser
-    this._router.use(bodyParser.urlencoded({ extended: false }));
-    this._router.use(bodyParser.json());
+    this._app.use(bodyParser.urlencoded({ extended: false }));
+    this._app.use(bodyParser.json());
+
+    this._routers = {};
   }
 
   register(routeId, requestTypes, protocols, route, Page, domains) {
@@ -45,8 +46,14 @@ class Router {
     if (requestTypes.length > 1 && requestTypes.indexOf('all') !== -1) {
       throw new Error('requestType: "all" cannot be combined with other requests');
     } else {
-      requestTypes.forEach(requestType => {
-        Function.prototype.apply.call(this._router[requestType], this._router, routerArguments);
+      domains.forEach(domain => {
+        let router = this._routers[domain.host];
+        if (router === undefined) {
+          router = this._routers[domain.host] = express.Router();
+        }
+        requestTypes.forEach(requestType => {
+          Function.prototype.apply.call(router[requestType], router, routerArguments);
+        });
       });
     }
 
@@ -54,7 +61,15 @@ class Router {
   }
 
   start(port) {
-    this._app.use(this._router);
+    this._app.use((req, res, next) => {
+      let host = req.hostname;
+      if (this._routers.hasOwnProperty(host)) {
+        this._routers[host](req, res, next);
+      } else {
+        console.error(`Host "${host}" is not found in Router`);
+        res.status(404).send();
+      }
+    });
     this._app.listen(port);
   }
 }

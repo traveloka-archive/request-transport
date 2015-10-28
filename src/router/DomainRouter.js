@@ -8,18 +8,21 @@ class DomainRouter extends Router {
     domainList.forEach(d => {
       let domain = {
         locale: d.locale,
-        domain: d.domain
+        domain: d.domain,
+        host: d.domain
       };
       domains = domains.set(domain.locale, domain);
       domainsByHostname = domainsByHostname.set(domain.domain, domain);
     });
     super(domains);
-    this._router.use(this.parseLocale.bind(this));
+    this._app.use(this.parseLocale.bind(this));
     this._domainsByHostname = domainsByHostname;
   }
 
-  register(routeId, requestTypes, protocols, route, Page, domains) {
-    super.register(routeId, requestTypes, protocols, route, Page, domains);
+  register(domains, registerCallback) {
+    registerCallback((routeId, requestTypes, protocols, route, Page) => {
+      super.register(routeId, requestTypes, protocols, route, Page, domains);
+    });
   }
 
   parseLocale(req, res, next) {
