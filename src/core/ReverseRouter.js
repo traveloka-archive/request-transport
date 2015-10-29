@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import pathToRegexp from 'path-to-regexp';
 
 class ReverseRouter {
   constructor() {
@@ -13,28 +14,23 @@ class ReverseRouter {
     }
   }
 
-  url(pageId, locale, params) {
+  url(pageId, locale, params = {}, queryString = {}) {
     let page = this._pages.get(pageId);
     if (page === undefined) {
       throw new Error(`pageId: ${pageId} not found.`);
     }
     let host = page.getDomain(locale);
-    let route = page.getRoute().replace(/(\/:(\w+)?(\(.+?\))?(\?)?)/g, (m, pFull, pName, pRegex, pOptional) => {
-      let required = !pOptional;
-      let param = pName;
-      if (required && !params.hasOwnProperty(param)) {
-        throw new Error(`Missing value for "${param}"`);
+    let rawRoute = page.getRoute();
+    let toPath = pathToRegexp.compile(rawRoute);
+    let route = toPath(params);
+    let qs = '';
+    for (var key in queryString) {
+      if (queryString.hasOwnProperty(key)) {
+        qs += `&${key}=${queryString[key]}`;
       }
-
-      let value = params[param];
-      if (pRegex && value) {
-        if (!new RegExp(`^${pRegex}$`).test(value)) {
-          throw new Error(`Invalid value for "${param}", should match "${pRegex}"`);
-        }
-      }
-      return value ? `/${value}` : '';
-    });
-    return host + route;
+    }
+    qs = qs.replace('&', '?');
+    return host + route + qs;
   }
 }
 

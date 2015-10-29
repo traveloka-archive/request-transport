@@ -33,6 +33,7 @@
     "babel": "^5.8.21",
     "body-parser": "^1.13.3",
     "express": "^4.13.3",
-    "immutable": "^3.7.4"
+    "immutable": "^3.7.4",
+    "path-to-regexp": "^1.2.1"
   }
 }
