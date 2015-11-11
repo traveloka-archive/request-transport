@@ -19,6 +19,14 @@ class Router {
     this._routers = {};
   }
 
+  get expressApp() {
+    return this._app;
+  }
+
+  get expressRouters() {
+    return this._routers;
+  }
+
   register(routeId, requestTypes, protocols, route, Page, domains) {
     domains = domains || this._defaultDomains;
 
