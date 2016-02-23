@@ -7,6 +7,10 @@ class Page {
     this._protocols = protocols;
     this._route = route;
     this._domains = domains;
+    this._protocolMap = {};
+    protocols.forEach(p => {
+      this._protocolMap[p] = true;
+    });
     this._initDefaultFilters();
   }
 
@@ -15,12 +19,15 @@ class Page {
     this._responseFilters = [Sender];
   }
 
-  getDomain(locale) {
+  getDomain(locale, protocol) {
     let domain = this._domains.get(locale);
     if (domain === undefined) {
       throw new Error(`Page: ${this.name} does not have locale: ${locale}`);
     }
-    return `${this._protocols[0]}://${domain.domain}`;
+    if (!this._protocolMap.hasOwnProperty(protocol)) {
+      protocol = this._protocols[0];
+    }
+    return `${protocol}://${domain.domain}`;
   }
 
   getRouteId() {

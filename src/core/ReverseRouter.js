@@ -14,12 +14,12 @@ class ReverseRouter {
     }
   }
 
-  url(pageId, locale, params = {}, queryString = {}) {
+  url(pageId, locale, params = {}, queryString = {}, protocol) {
     let page = this._pages.get(pageId);
     if (page === undefined) {
       throw new Error(`pageId: ${pageId} not found.`);
     }
-    let host = page.getDomain(locale);
+    let host = page.getDomain(locale, protocol);
     let rawRoute = page.getRoute();
     let toPath = pathToRegexp.compile(rawRoute);
     let route = toPath(params);

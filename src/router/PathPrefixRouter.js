@@ -57,7 +57,7 @@ class PathPrefixRouter extends Router {
     if (req.locale === undefined) {
       req.locale = this._defaultDomain.locale;
     }
-    let reverseRouter = new ReverseRouterFacade(this._reverseRouter, req.locale);
+    let reverseRouter = new ReverseRouterFacade(this._reverseRouter, req.locale, req.get('X-Forwarded-Proto'));
     req.router = reverseRouter;
     next();
   }
