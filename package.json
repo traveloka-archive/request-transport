@@ -1,6 +1,6 @@
 {
   "name": "request-transport",
-  "version": "0.7.1",
+  "version": "1.0.0",
   "description": "Locale Aware Nodejs Router",
   "main": "lib/index.js",
   "scripts": {
