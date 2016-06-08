@@ -2,6 +2,7 @@ import express from 'express';
 import FilterFactory from '../core/FilterFactory';
 import ReverseRouter from './ReverseRouter';
 import bodyParser from 'body-parser';
+import asInterceptor from './asInterceptor';
 
 class Router {
   constructor(domains) {
@@ -34,22 +35,35 @@ class Router {
     requestTypes = requestTypes.constructor !== Array ? [requestTypes] : requestTypes;
     protocols = protocols.constructor !== Array ? [protocols] : protocols;
 
-    let page = new Page(routeId, requestTypes, protocols, route, domains);
-    let routerArguments = [];
+    const page = new Page(routeId, requestTypes, protocols, route, domains);
+    const routerArguments = [];
+
     routerArguments.push(route);
     routerArguments.push((req, res, next) => {
       req.currentPage = page;
       next();
     });
-    page.getRequestFilters().forEach(b => {
-      let filter = this._filterFactory.getFilter(b);
-      routerArguments.push(filter.onFilter.bind(filter));
+
+    page.filters.forEach(FilterClass => {
+      const filter = this._filterFactory.getFilter(FilterClass);
+      routerArguments.push(filter.onRequest.bind(filter));
     });
+
+    // We passed in onResponse filter in reverse to make filter execution
+    // follow A.req, B.req, B.res, A.res
+    //
+    // Note that this onResponse filter is also put before page.render,
+    // to make sure we can properly intercept the end response. Using
+    // asInterceptor allow us to "delay" this filter execution until right
+    // before response will be sent to client
+    page.filters.reverse().forEach(FilterClass => {
+      const filter = this._filterFactory.getFilter(FilterClass);
+      const responseFilter = filter.onResponse.bind(filter);
+      routerArguments.push(asInterceptor(responseFilter));
+    });
+
     routerArguments.push(page.render.bind(page));
-    page.getResponseFilters().forEach(a => {
-      let filter = this._filterFactory.getFilter(a);
-      routerArguments.push(filter.onFilter.bind(filter));
-    });
+    routerArguments.push((req, res) => res.send(req.responseBody));
 
     if (requestTypes.length > 1 && requestTypes.indexOf('all') !== -1) {
       throw new Error('requestType: "all" cannot be combined with other requests');
@@ -68,9 +82,9 @@ class Router {
     this._reverseRouter.register(routeId, page);
   }
 
-  start(port) {
+  start(port, opt_callback) {
     this._app.use((req, res, next) => {
-      let host = req.hostname;
+      const host = req.hostname;
       if (this._routers.hasOwnProperty(host)) {
         this._routers[host](req, res, next);
       } else {
@@ -78,7 +92,7 @@ class Router {
         res.status(404).send();
       }
     });
-    this._app.listen(port);
+    this._app.listen(port, opt_callback);
   }
 }
 

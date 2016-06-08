@@ -1,5 +1,9 @@
 class Filter {
-  onFilter(req, res, next) {
+  onRequest(req, res, next) {
+    next();
+  }
+
+  onResponse(req, res, next) {
     next();
   }
 }

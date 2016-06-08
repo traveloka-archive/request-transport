@@ -1,7 +1,7 @@
-import Sender from '../filters/Sender';
-
 class Page {
   constructor(routeId, requestType, protocols, route, domains) {
+    this.filters = [];
+
     this._routeId = routeId;
     this._requestType = requestType;
     this._protocols = protocols;
@@ -11,12 +11,6 @@ class Page {
     protocols.forEach(p => {
       this._protocolMap[p] = true;
     });
-    this._initDefaultFilters();
-  }
-
-  _initDefaultFilters() {
-    this._requestFilters = [];
-    this._responseFilters = [Sender];
   }
 
   getDomain(locale, protocol) {
@@ -36,14 +30,6 @@ class Page {
 
   getRoute() {
     return this._route;
-  }
-
-  getRequestFilters() {
-    return this._requestFilters;
-  }
-
-  getResponseFilters() {
-    return this._responseFilters;
   }
 
   render(req, res, next) {
