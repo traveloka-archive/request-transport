@@ -84,7 +84,7 @@ class Router {
 
   start(port, opt_callback) {
     this._app.use((req, res, next) => {
-      const host = req.hostname;
+      const host = req.headers.host || req.hostname;
       if (this._routers.hasOwnProperty(host)) {
         this._routers[host](req, res, next);
       } else {
