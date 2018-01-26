@@ -92,7 +92,7 @@ class Router {
         res.status(404).send();
       }
     });
-    this._app.listen(port, opt_callback);
+    return this._app.listen(port, opt_callback);
   }
 }
 
