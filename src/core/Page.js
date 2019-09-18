@@ -36,8 +36,8 @@ class Page {
     next();
   }
 
-  send(req, next, body) {
-    req.responseBody = body;
+  send(req, next, bodyOrCallback) {
+    req.responseBody = bodyOrCallback;
     next();
   }
 }

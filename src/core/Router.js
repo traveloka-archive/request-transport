@@ -63,7 +63,15 @@ class Router {
     });
 
     routerArguments.push(page.render.bind(page));
-    routerArguments.push((req, res) => res.send(req.responseBody));
+    routerArguments.push((req, res) => {
+      // Incorrect naming, to support stream
+      if (typeof req.responseBody === 'function') {
+        req.responseBody();
+      }
+      else {
+        res.send(req.responseBody);
+      }
+    });
 
     if (requestTypes.length > 1 && requestTypes.indexOf('all') !== -1) {
       throw new Error('requestType: "all" cannot be combined with other requests');
