@@ -2,7 +2,6 @@ import express from 'express';
 import FilterFactory from '../core/FilterFactory';
 import ReverseRouter from './ReverseRouter';
 import bodyParser from 'body-parser';
-import asInterceptor from './asInterceptor';
 
 class Router {
   constructor(domains) {
@@ -49,22 +48,8 @@ class Router {
       routerArguments.push(filter.onRequest.bind(filter));
     });
 
-    // We passed in onResponse filter in reverse to make filter execution
-    // follow A.req, B.req, B.res, A.res
-    //
-    // Note that this onResponse filter is also put before page.render,
-    // to make sure we can properly intercept the end response. Using
-    // asInterceptor allow us to "delay" this filter execution until right
-    // before response will be sent to client
-    page.filters.reverse().forEach(FilterClass => {
-      const filter = this._filterFactory.getFilter(FilterClass);
-      const responseFilter = filter.onResponse.bind(filter);
-      routerArguments.push(asInterceptor(responseFilter));
-    });
-
     routerArguments.push(page.render.bind(page));
-    // asInterceptor to avoid calling stream
-    routerArguments.push(asInterceptor((req, res) => {
+    routerArguments.push((req, res) => {
       // Incorrect naming, to support stream
       if (typeof req.responseBody === 'function') {
         req.responseBody();
@@ -72,7 +57,7 @@ class Router {
       else {
         res.send(req.responseBody);
       }
-    }));
+    });
 
     if (requestTypes.length > 1 && requestTypes.indexOf('all') !== -1) {
       throw new Error('requestType: "all" cannot be combined with other requests');

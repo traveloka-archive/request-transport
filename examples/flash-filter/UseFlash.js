@@ -26,9 +26,8 @@ export default class UseFlash extends Filter {
     next();
   }
 
-  onResponse(req, res, next) {
+  static onResponse(req, res) {
     const { flash } = req;
     res.cookie(FLASH_COOKIE_NAME, flash.toString(), sessionCookieSettings);
-    next();
   }
 }

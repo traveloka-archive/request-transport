@@ -10,6 +10,9 @@ export default class HomePage extends Page {
 
   render(req, res, next) {
     req.flash.set('message', 'register first');
+
+    UseFlash.onResponse(req, res);
+
     return res.redirect('/register');
   }
 }
