@@ -23,7 +23,7 @@ export default function asInterceptor(fn) {
       // This flag ensure all onResponseFilters to be executed
       // before calling res.write.
       if (res._filterHasBeenExecutedBefore) {
-        return originalEnd.apply(res, args);
+        return originalWrite.apply(res, args);
       }
       fn(req, res, () => {
         originalWrite.apply(res, args);
