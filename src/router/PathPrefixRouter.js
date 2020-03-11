@@ -3,19 +3,19 @@ import Immutable from 'immutable';
 import ReverseRouterFacade from '../core/ReverseRouterFacade';
 
 class PathPrefixRouter extends Router {
-  constructor(host, locales, defaultLocale, customConfig) {
-    let domains = PathPrefixRouter.createDomainMap(host, locales, defaultLocale);
+  constructor(host, locales, defaultLocale, config) {
+    let domains = PathPrefixRouter.createDomainMap(host, locales, defaultLocale, config);
 
     super(domains);
 
-    this._customConfig = customConfig;
+    this._customConfig = config;
     if (defaultLocale !== null && defaultLocale !== undefined) {
       this._defaultDomain = this._defaultDomains.get(defaultLocale);
     }
     this._app.use(this.parseLocale.bind(this));
   }
 
-  static createDomainMap(host, locales, defaultLocale) {
+  static createDomainMap(host, locales, defaultLocale, config) {
     let domains = Immutable.OrderedMap();
     let localesExist = locales !== null && locales !== undefined;
     if (!localesExist || locales.length === 0) {
@@ -25,9 +25,9 @@ class PathPrefixRouter extends Router {
       throw new Error(`Locale ${defaultLocale} is not defined in locales`);
     }
 
+    let shouldUseLongPrefix = config && config.shouldUseLongPrefix;
     locales.forEach(locale => {
       let domain;
-      let shouldUseLongPrefix = this._customConfig && this._customConfig.shouldUseLongPrefix;
       if (locale === defaultLocale && !shouldUseLongPrefix) {
         domain = host;
       } else {
@@ -64,7 +64,7 @@ class PathPrefixRouter extends Router {
   }
 
   register(host, locales, defaultLocale, registerCallback) {
-    let domains = PathPrefixRouter.createDomainMap(host, locales, defaultLocale);
+    let domains = PathPrefixRouter.createDomainMap(host, locales, defaultLocale, this._customConfig);
     registerCallback((routeId, requestTypes, protocols, route, Page) => {
       super.register(routeId, requestTypes, protocols, route, Page, domains);
     });
