@@ -3,11 +3,12 @@ import Immutable from 'immutable';
 import ReverseRouterFacade from '../core/ReverseRouterFacade';
 
 class PathPrefixRouter extends Router {
-  constructor(host, locales, defaultLocale) {
+  constructor(host, locales, defaultLocale, customConfig) {
     let domains = PathPrefixRouter.createDomainMap(host, locales, defaultLocale);
 
     super(domains);
 
+    this._customConfig = customConfig;
     if (defaultLocale !== null && defaultLocale !== undefined) {
       this._defaultDomain = this._defaultDomains.get(defaultLocale);
     }
@@ -26,8 +27,8 @@ class PathPrefixRouter extends Router {
 
     locales.forEach(locale => {
       let domain;
-
-      if (locale === defaultLocale) {
+      let shouldUseLongPrefix = this._customConfig && this._customConfig.shouldUseLongPrefix;
+      if (locale === defaultLocale && !shouldUseLongPrefix) {
         domain = host;
       } else {
         domain = `${host}/${locale}`;
